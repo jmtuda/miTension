@@ -21,6 +21,18 @@ Web          │
                                       └─ trabajador/outbox ── Microsoft Graph ── OneDrive
 ```
 
+### Estructura del repositorio
+
+```text
+android/app/       esqueleto de la aplicación Compose
+android/domain/    dominio Kotlin puro y pruebas
+web/               dominio TypeScript y futura aplicación web
+contracts/         vectores de comportamiento comunes
+supabase/          futuras migraciones y configuración
+```
+
+El cálculo se implementa de forma nativa en Kotlin y TypeScript. Ambos usan `contracts/measurement-mean-cases.csv` como contrato ejecutable para evitar divergencias sin introducir una dependencia compartida entre plataformas.
+
 ### Android
 
 - Kotlin y Jetpack Compose.
@@ -93,4 +105,3 @@ Tras aceptar una nueva medición en PostgreSQL, la misma transacción crea un ev
 4. Web, filtros y CSV.
 5. Outbox y OneDrive.
 6. Inspección e importación del Excel histórico.
-

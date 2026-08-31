@@ -5,8 +5,8 @@ Estados sugeridos: `Pendiente`, `En curso`, `Bloqueado`, `Hecho`. Prioridades: P
 ## P0 — Base y decisiones
 
 - [ ] **P0.1 Definir reglas pendientes:** rangos/avisos, acceso privado sin login cotidiano, zona horaria, CSV y formato/retención de OneDrive.
-- [ ] **P0.2 Crear estructura del repositorio:** Android, web, Supabase/migraciones, pruebas y CI mínimos.
-- [ ] **P0.3 Implementar dominio de medición:** dos lecturas, `ROUND_HALF_UP`, validación y vectores de prueba compartidos.
+- [x] **P0.2 Crear estructura del repositorio:** Android, web, Supabase/migraciones, pruebas y CI mínimos.
+- [x] **P0.3 Implementar dominio de medición:** dos lecturas, `ROUND_HALF_UP`, validación y vectores de prueba compartidos.
 - [ ] **P0.4 Crear esquema Supabase:** `measurements`, índices, timestamps, soft delete y migraciones reproducibles.
 - [ ] **P0.5 Proteger acceso:** Supabase Auth/aprovisionamiento elegido, RLS y pruebas negativas; ninguna tabla clínica pública.
 
