@@ -15,7 +15,7 @@ root.render(
     ) : (
       <main className="centered configuration-error" role="alert">
         <h1>Falta configurar Supabase</h1>
-        <p>Añade <code>VITE_SUPABASE_URL</code> y <code>VITE_SUPABASE_ANON_KEY</code> al entorno.</p>
+        <p>Añade <code>VITE_SUPABASE_URL</code> y <code>VITE_SUPABASE_PUBLISHABLE_KEY</code> al entorno.</p>
       </main>
     )}
   </StrictMode>,

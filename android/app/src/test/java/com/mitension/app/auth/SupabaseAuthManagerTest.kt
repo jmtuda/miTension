@@ -25,7 +25,7 @@ class SupabaseAuthManagerTest {
         assertEquals("secret", api.password)
         assertEquals(signedIn, store.session)
         assertEquals("user-1", session.userId)
-        assertEquals("public-anon-key", session.anonKey)
+        assertEquals("sb_publishable_test", session.publishableKey)
     }
 
     @Test fun `a persisted valid session opens without a refresh`() = runBlocking {
@@ -71,7 +71,7 @@ class SupabaseAuthManagerTest {
     }
 
     private fun manager(store: MemoryStore, api: FakeAuthApi) = SupabaseAuthManager(
-        "https://example.supabase.co/", "public-anon-key", store, api, clock,
+        "https://example.supabase.co/", "sb_publishable_test", store, api, clock,
     )
 }
 

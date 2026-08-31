@@ -10,7 +10,7 @@ instancia real de Supabase.
 ## Aplicación web
 
 Requiere Node.js y las variables públicas `VITE_SUPABASE_URL` y
-`VITE_SUPABASE_ANON_KEY`; consulta `web/.env.example`. Desde `web/`:
+`VITE_SUPABASE_PUBLISHABLE_KEY`; consulta `web/.env.example`. Desde `web/`:
 
 ```text
 npm install

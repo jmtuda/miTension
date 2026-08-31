@@ -5,7 +5,7 @@ Esta guía prepara un único entorno real compartido por Android y web. Los valo
 ## 1. Crear el proyecto Supabase
 
 1. En Supabase, crear un proyecto en el plan gratuito y guardar la contraseña de la base de datos en un gestor de contraseñas.
-2. Anotar localmente el **Project ref**, la **Project URL** (`https://<PROJECT_REF>.supabase.co`) y la clave pública **anon**. No copiar la clave `service_role` ni una secret key a ningún cliente.
+2. Anotar localmente el **Project ref**, la **Project URL** (`https://<PROJECT_REF>.supabase.co`) y la **Publishable key** (`sb_publishable_...`) del diálogo **Connect** o de **Settings → API Keys**. No copiar claves `sb_secret_...`, `service_role` ni ninguna clave elevada a un cliente.
 3. Revisar en el panel los límites vigentes de base de datos, transferencia, autenticación y pausa por inactividad. Para este MVP personal no se habilitan extras de pago.
 
 ## 2. Aplicar las migraciones
@@ -45,13 +45,13 @@ Se usa Vercel Hobby por su soporte directo de React/Vite y el despliegue automá
 
    ```text
    VITE_SUPABASE_URL=https://<PROJECT_REF>.supabase.co
-   VITE_SUPABASE_ANON_KEY=<ANON_KEY_PUBLICA>
+   VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_<CLAVE_PUBLICA>
    ```
 
 5. Desplegar y abrir la URL HTTPS resultante. Un cambio de variables requiere un nuevo despliegue.
 6. En Supabase, configurar **Authentication → URL Configuration → Site URL** con la URL de producción de Vercel. No añadir comodines ni redirecciones que no se usen.
 
-Las variables `VITE_*` forman parte del JavaScript público compilado: solo contienen la URL y la clave anon pública. La protección de los datos depende de Auth y RLS.
+Las variables `VITE_*` forman parte del JavaScript público compilado: solo contienen la URL y la Publishable key. La protección de los datos depende de Auth y RLS. Nunca configurar aquí una clave `sb_secret_...` ni `service_role`.
 
 Para desarrollo local, copiar `web/.env.example` a `web/.env.local`, completar esos dos valores y no versionar el archivo. Verificación previa al despliegue:
 
@@ -69,7 +69,7 @@ Configurar el mismo proyecto Supabase mediante variables de entorno o en `~/.gra
 
 ```text
 SUPABASE_URL=https://<PROJECT_REF>.supabase.co
-SUPABASE_ANON_KEY=<ANON_KEY_PUBLICA>
+SUPABASE_PUBLISHABLE_KEY=sb_publishable_<CLAVE_PUBLICA>
 ```
 
 Con JDK 17 y Android SDK 33 instalados:
@@ -107,5 +107,5 @@ P1.14 solo puede cerrarse después de ejecutar este checklist contra el Supabase
 - [ ] **PDF Android:** exportar/compartir el filtro activo; comprobar legibilidad, zona local, campos requeridos y ausencia de eliminados/metadatos.
 - [ ] **CSV web:** descargar y, si el navegador lo permite, compartir; comprobar contenido idéntico al conjunto filtrado y fallback de descarga.
 - [ ] **PDF web:** descargar y, si está disponible, compartir; comprobar legibilidad y fallback de descarga.
-- [ ] **RLS observable:** cerrar sesión y confirmar que no se muestran datos; volver a autorizar y confirmar que reaparecen. No probar con `service_role`.
+- [ ] **RLS observable:** cerrar sesión y confirmar que no se muestran datos; volver a autorizar y confirmar que reaparecen. Usar solo la Publishable key; no probar clientes con `sb_secret_...` ni `service_role`.
 - [ ] **Cierre:** confirmar que no quedan duplicados, pendientes inesperados ni datos de prueba que deban conservarse; guardar evidencias no sensibles y anotar incidencias.

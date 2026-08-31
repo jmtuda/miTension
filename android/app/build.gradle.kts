@@ -9,8 +9,8 @@ fun String.asBuildConfigString(): String = "\"${replace("\\", "\\\\").replace("\
 val supabaseUrl = providers.gradleProperty("SUPABASE_URL")
     .orElse(providers.environmentVariable("SUPABASE_URL"))
     .getOrElse("")
-val supabaseAnonKey = providers.gradleProperty("SUPABASE_ANON_KEY")
-    .orElse(providers.environmentVariable("SUPABASE_ANON_KEY"))
+val supabasePublishableKey = providers.gradleProperty("SUPABASE_PUBLISHABLE_KEY")
+    .orElse(providers.environmentVariable("SUPABASE_PUBLISHABLE_KEY"))
     .getOrElse("")
 
 android {
@@ -24,7 +24,7 @@ android {
         versionCode = 1
         versionName = "0.1.0"
         buildConfigField("String", "SUPABASE_URL", supabaseUrl.asBuildConfigString())
-        buildConfigField("String", "SUPABASE_ANON_KEY", supabaseAnonKey.asBuildConfigString())
+        buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", supabasePublishableKey.asBuildConfigString())
     }
 
     buildFeatures {

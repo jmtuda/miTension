@@ -42,7 +42,7 @@ El cálculo se implementa de forma nativa en Kotlin y TypeScript. Ambos usan `co
 - El asistente de alta conserva Medición 1 y 2 solo como estado/borrador. Al confirmar crea una medición local con UUID y estado pendiente.
 - El historial lee Room para responder sin conexión.
 - CSV y PDF se generan bajo demanda y se entregan al mecanismo nativo de compartir, que permite elegir cualquier aplicación instalada compatible.
-- Supabase Auth permite autorizar inicialmente el dispositivo con la cuenta única ya aprovisionada. Access token, refresh token, usuario y caducidad se conservan en preferencias cifradas; el token se renueva antes de sincronizar. URL y `anon key` pública llegan mediante propiedades de build, nunca mediante credenciales incrustadas.
+- Supabase Auth permite autorizar inicialmente el dispositivo con la cuenta única ya aprovisionada. Access token, refresh token, usuario y caducidad se conservan en preferencias cifradas; el token se renueva antes de sincronizar. URL y Publishable key (`sb_publishable_...`) llegan mediante propiedades de build, nunca mediante credenciales incrustadas.
 
 ### Web
 
@@ -56,7 +56,7 @@ El cálculo se implementa de forma nativa en Kotlin y TypeScript. Ambos usan `co
 
 - PostgreSQL almacena mediciones y eliminaciones lógicas como fuente canónica cloud.
 - API o Edge Functions validan entradas, aplican acceso privado e idempotencia.
-- Row Level Security debe estar activada. La clave `service_role` solo existe en servidor.
+- Row Level Security debe estar activada. Ninguna clave elevada (`sb_secret_...` o la heredada `service_role`) entra en los clientes.
 - Realtime no es requisito; sincronización por consulta incremental es suficiente.
 
 ## Acceso de usuario único
@@ -65,7 +65,7 @@ El cálculo se implementa de forma nativa en Kotlin y TypeScript. Ambos usan `co
 
 Se aprovisiona una única cuenta y se desactiva el registro público de nuevas cuentas. Cada medición pertenece a `auth.uid()` y las políticas RLS solo permiten al usuario autenticado leer, crear y aplicar soft delete sobre sus propias filas. El rol anónimo no tiene acceso y no se permite el borrado físico.
 
-La clave pública de Supabase puede distribuirse en los clientes junto con la sesión persistente del usuario; `service_role`, contraseñas y secretos compartidos permanentes solo existen en entornos de servidor. Android conserva la sesión cifrada en el dispositivo y web delega su persistencia y renovación al cliente oficial de Supabase.
+La Publishable key de Supabase puede distribuirse en los clientes junto con la sesión persistente del usuario; claves `sb_secret_...`, `service_role`, contraseñas y secretos compartidos permanentes solo existen en entornos de servidor. Android conserva la sesión cifrada en el dispositivo y web delega su persistencia y renovación al cliente oficial de Supabase.
 
 ## Sincronización
 

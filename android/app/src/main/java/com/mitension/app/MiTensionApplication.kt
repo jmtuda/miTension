@@ -19,9 +19,9 @@ class MiTensionApplication : Application() {
     val authManager by lazy {
         SupabaseAuthManager(
             BuildConfig.SUPABASE_URL,
-            BuildConfig.SUPABASE_ANON_KEY,
+            BuildConfig.SUPABASE_PUBLISHABLE_KEY,
             SharedPreferencesAuthSessionStore(this),
-            SupabaseRestAuthApi(BuildConfig.SUPABASE_URL, BuildConfig.SUPABASE_ANON_KEY),
+            SupabaseRestAuthApi(BuildConfig.SUPABASE_URL, BuildConfig.SUPABASE_PUBLISHABLE_KEY),
         )
     }
     val syncEngine by lazy { MeasurementSyncEngine(database.measurementsDao(), SupabaseRestMeasurementSyncApi()) }

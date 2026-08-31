@@ -71,13 +71,13 @@ class SupabaseRestMeasurementSyncApi : MeasurementSyncApi {
     }
 
     private fun request(session: SupabaseSession, method: String, path: String, body: String? = null, prefer: String? = null): String {
-        check(session.anonKey != session.accessToken) { "an authenticated user session is required" }
+        check(session.publishableKey != session.accessToken) { "an authenticated user session is required" }
         val connection = URI(session.baseUrl + path).toURL().openConnection() as HttpURLConnection
         try {
             connection.requestMethod = method
             connection.connectTimeout = 15_000
             connection.readTimeout = 20_000
-            connection.setRequestProperty("apikey", session.anonKey)
+            connection.setRequestProperty("apikey", session.publishableKey)
             connection.setRequestProperty("Authorization", "Bearer ${session.accessToken}")
             connection.setRequestProperty("Content-Type", "application/json")
             prefer?.let { connection.setRequestProperty("Prefer", it) }

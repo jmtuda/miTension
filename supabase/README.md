@@ -22,6 +22,6 @@ psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f tests/measurements_rls.test.sql
 - Crear manualmente la única cuenta de la aplicación en Supabase Auth.
 - Desactivar el registro público de nuevas cuentas.
 - Autorizar esa cuenta una vez en cada dispositivo o navegador y conservar su sesión de forma segura.
-- No distribuir la contraseña, `service_role` ni otros secretos en Android o JavaScript público.
+- Distribuir en Android/web únicamente la Publishable key (`sb_publishable_...`); nunca la contraseña, claves `sb_secret_...`, `service_role` ni otros secretos.
 
 La segunda migración añade el propietario `user_id`, conserva RLS y limita lectura, inserción y actualización a las filas del usuario autenticado. El rol anónimo no tiene permisos y el borrado físico no se concede. Si ya existen mediciones, la migración solo puede asignarlas automáticamente cuando existe exactamente una cuenta Auth; en cualquier otro caso aborta para evitar atribuir datos al usuario incorrecto.
