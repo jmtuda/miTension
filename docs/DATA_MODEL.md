@@ -15,6 +15,7 @@
 | Campo | Tipo | Reglas |
 |---|---|---|
 | `id` | `uuid` | PK; creado por cliente |
+| `user_id` | `uuid` | obligatorio; propietario en `auth.users`; servidor, `auth.uid()` |
 | `measured_at` | `timestamptz` | obligatorio; momento de la medición |
 | `systolic` | `smallint` | obligatorio; media redondeada |
 | `diastolic` | `smallint` | obligatorio; media redondeada |
@@ -33,6 +34,8 @@ Restricciones mínimas: enteros positivos y `diastolic < systolic`. No se establ
 - Índice parcial sobre registros activos (`deleted_at IS NULL`) si las consultas lo justifican.
 
 No hay operación de actualización de campos clínicos en el MVP. Solo se permiten creación y establecimiento de `deleted_at`.
+
+RLS limita lectura, creación y soft delete a filas cuyo `user_id` coincide con el usuario de Supabase Auth. `user_id` es inmutable. El rol anónimo no tiene permisos sobre la tabla y no existe política de borrado físico.
 
 ### `backup_outbox`
 
