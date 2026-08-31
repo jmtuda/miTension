@@ -1,0 +1,4 @@
+# Copiar estos valores a ~/.gradle/gradle.properties o definirlos como variables de entorno.
+# La anon key es pública; no usar service_role ni credenciales de la cuenta aquí.
+SUPABASE_URL=
+SUPABASE_ANON_KEY=

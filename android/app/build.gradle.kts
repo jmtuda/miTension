@@ -4,6 +4,15 @@ plugins {
     kotlin("kapt")
 }
 
+fun String.asBuildConfigString(): String = "\"${replace("\\", "\\\\").replace("\"", "\\\"")}\""
+
+val supabaseUrl = providers.gradleProperty("SUPABASE_URL")
+    .orElse(providers.environmentVariable("SUPABASE_URL"))
+    .getOrElse("")
+val supabaseAnonKey = providers.gradleProperty("SUPABASE_ANON_KEY")
+    .orElse(providers.environmentVariable("SUPABASE_ANON_KEY"))
+    .getOrElse("")
+
 android {
     namespace = "com.mitension.app"
     compileSdk = 33
@@ -14,10 +23,13 @@ android {
         targetSdk = 33
         versionCode = 1
         versionName = "0.1.0"
+        buildConfigField("String", "SUPABASE_URL", supabaseUrl.asBuildConfigString())
+        buildConfigField("String", "SUPABASE_ANON_KEY", supabaseAnonKey.asBuildConfigString())
     }
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     composeOptions {
@@ -42,6 +54,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
     implementation("androidx.room:room-runtime:2.5.2")
     implementation("androidx.room:room-ktx:2.5.2")
     implementation("androidx.work:work-runtime-ktx:2.8.1")

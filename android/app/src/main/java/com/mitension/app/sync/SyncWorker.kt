@@ -19,9 +19,9 @@ import java.util.concurrent.TimeUnit
 class SyncWorker(context: Context, parameters: WorkerParameters) : CoroutineWorker(context, parameters) {
     override suspend fun doWork(): Result {
         val app = applicationContext as MiTensionApplication
-        val session = app.sessionProvider.currentSession() ?: return Result.failure()
         return withContext(Dispatchers.IO) {
             runCatching {
+                val session = app.authManager.validSession() ?: return@runCatching Result.success()
                 app.syncEngine.synchronize(session)
                 Result.success()
             }.getOrElse { Result.retry() }
