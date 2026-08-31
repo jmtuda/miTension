@@ -42,6 +42,7 @@ El cálculo se implementa de forma nativa en Kotlin y TypeScript. Ambos usan `co
 - El asistente de alta conserva Medición 1 y 2 solo como estado/borrador. Al confirmar crea una medición local con UUID y estado pendiente.
 - El historial lee Room para responder sin conexión.
 - CSV y PDF se generan bajo demanda y se entregan al mecanismo nativo de compartir, que permite elegir cualquier aplicación instalada compatible.
+- Supabase Auth permite autorizar inicialmente el dispositivo con la cuenta única ya aprovisionada. Access token, refresh token, usuario y caducidad se conservan en preferencias cifradas; el token se renueva antes de sincronizar. URL y `anon key` pública llegan mediante propiedades de build, nunca mediante credenciales incrustadas.
 
 ### Web
 
@@ -64,7 +65,7 @@ El cálculo se implementa de forma nativa en Kotlin y TypeScript. Ambos usan `co
 
 Se aprovisiona una única cuenta y se desactiva el registro público de nuevas cuentas. Cada medición pertenece a `auth.uid()` y las políticas RLS solo permiten al usuario autenticado leer, crear y aplicar soft delete sobre sus propias filas. El rol anónimo no tiene acceso y no se permite el borrado físico.
 
-La clave pública de Supabase puede distribuirse en los clientes junto con la sesión persistente del usuario; `service_role`, contraseñas y secretos compartidos permanentes solo existen en entornos de servidor. La implementación concreta de las pantallas y el almacenamiento seguro de sesión pertenece a los clientes posteriores.
+La clave pública de Supabase puede distribuirse en los clientes junto con la sesión persistente del usuario; `service_role`, contraseñas y secretos compartidos permanentes solo existen en entornos de servidor. Android conserva la sesión cifrada en el dispositivo y web delega su persistencia y renovación al cliente oficial de Supabase.
 
 ## Sincronización
 
