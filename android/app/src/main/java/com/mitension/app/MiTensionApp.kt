@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.weight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -104,9 +103,9 @@ fun MiTensionApp(viewModel: MeasurementsViewModel) {
     val filtered = filterMeasurements(items, from, to)
     Column(modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Button(onClick = onNew) { Text("Nueva medición") }
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedTextField(fromText, { fromText = it }, label = { Text("Desde (AAAA-MM-DD)") }, modifier = Modifier.weight(1f))
-            OutlinedTextField(toText, { toText = it }, label = { Text("Hasta (AAAA-MM-DD)") }, modifier = Modifier.weight(1f))
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedTextField(fromText, { fromText = it }, label = { Text("Desde (AAAA-MM-DD)") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(toText, { toText = it }, label = { Text("Hasta (AAAA-MM-DD)") }, modifier = Modifier.fillMaxWidth())
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(onClick = { shareMeasurements(context, filtered, ExportFormat.CSV) }, enabled = filtered.isNotEmpty()) { Text("Compartir CSV") }
