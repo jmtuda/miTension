@@ -41,7 +41,7 @@ begin
         raise exception 'a deleted measurement cannot be restored or deleted again';
     end if;
 
-    new.updated_at = now();
+    new.updated_at = clock_timestamp();
     return new;
 end;
 $$;
