@@ -1,0 +1,38 @@
+# Operating systems and IDEs
+.DS_Store
+.idea/
+*.iml
+.vscode/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+local.properties
+*.jks
+*.keystore
+*.pem
+
+# Android / Gradle
+.gradle/
+**/build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Web / Node
+node_modules/
+coverage/
+dist/
+.next/
+.nuxt/
+.svelte-kit/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Supabase local runtime
+supabase/.branches/
+supabase/.temp/
+
