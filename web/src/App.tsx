@@ -6,7 +6,9 @@ import { History } from "./components/History.tsx";
 import { ReadingForm } from "./components/ReadingForm.tsx";
 import type { DateFilter, Measurement, MeasurementRepository } from "./data/measurements.ts";
 import { addSecondReading, captureFirstReading, confirmMeasurement, type CalculatedMeasurement, type FirstReadingCaptured, type Reading } from "./domain/measurement.ts";
-import { measurementsToCsv, downloadCsv } from "./lib/csv.ts";
+import { csvFile, measurementsToCsv } from "./lib/csv.ts";
+import { measurementsToPdf } from "./lib/pdf.ts";
+import { shareOrDownload } from "./lib/share.ts";
 
 type Flow = { step: "idle" } | { step: "first" } | { step: "second"; first: FirstReadingCaptured } | { step: "confirm"; calculated: CalculatedMeasurement };
 
@@ -20,6 +22,7 @@ export function App({ auth, repository }: Readonly<{ auth: AuthGateway; reposito
   const [listError, setListError] = useState("");
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [exportStatus, setExportStatus] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -63,8 +66,13 @@ export function App({ auth, repository }: Readonly<{ auth: AuthGateway; reposito
     catch (error) { setListError(error instanceof Error ? error.message : "No se pudo eliminar la medición."); }
     finally { setDeletingId(null); }
   }
-  function exportCurrent() {
-    downloadCsv(measurementsToCsv(measurements), `mitension-${new Date().toISOString().slice(0, 10)}.csv`);
+  async function exportCurrent(format: "csv" | "pdf") {
+    const date = new Date().toISOString().slice(0, 10);
+    const file = format === "csv"
+      ? csvFile(measurementsToCsv(measurements), `mitension-${date}.csv`)
+      : new File([measurementsToPdf(measurements)], `mitension-${date}.pdf`, { type: "application/pdf" });
+    const result = await shareOrDownload(file);
+    setExportStatus(result === "shared" ? `${format.toUpperCase()} compartido.` : `${format.toUpperCase()} descargado.`);
   }
 
   return (
@@ -81,7 +89,7 @@ export function App({ auth, repository }: Readonly<{ auth: AuthGateway; reposito
         {flow.step === "first" && <ReadingForm number={1} onSubmit={captureFirst} onCancel={() => setFlow({ step: "idle" })} />}
         {flow.step === "second" && <ReadingForm number={2} onSubmit={captureSecond} onBack={() => setFlow({ step: "first" })} onCancel={() => setFlow({ step: "idle" })} />}
         {flow.step === "confirm" && <Confirmation measurement={flow.calculated} saving={saving} onBack={() => setFlow({ step: "second", first: captureFirstReading(flow.calculated.first) })} onCancel={() => setFlow({ step: "idle" })} onConfirm={save} />}
-        <History measurements={measurements} filter={filter} loading={loading} error={listError} deletingId={deletingId} onFilterChange={setFilter} onDelete={(measurement) => void requestDelete(measurement)} onExport={exportCurrent} onRetry={() => void load()} />
+        <History measurements={measurements} filter={filter} loading={loading} error={listError} deletingId={deletingId} onFilterChange={setFilter} onDelete={(measurement) => void requestDelete(measurement)} onExport={(format) => void exportCurrent(format)} exportStatus={exportStatus} onRetry={() => void load()} />
       </main>
       <footer>Datos privados protegidos por tu sesión.</footer>
     </div>

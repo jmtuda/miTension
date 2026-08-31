@@ -42,11 +42,6 @@ function currentOffset(date: Date): number {
   return date.getTimezoneOffset();
 }
 
-export function downloadCsv(csv: string, filename: string): void {
-  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = filename;
-  link.click();
-  URL.revokeObjectURL(url);
+export function csvFile(csv: string, filename: string): File {
+  return new File([csv], filename, { type: "text/csv;charset=utf-8" });
 }
