@@ -37,23 +37,7 @@ No hay operación de actualización de campos clínicos en el MVP. Solo se permi
 
 RLS limita lectura, creación y soft delete a filas cuyo `user_id` coincide con el usuario de Supabase Auth. `user_id` es inmutable. El rol anónimo no tiene permisos sobre la tabla y no existe política de borrado físico.
 
-### `backup_outbox`
-
-| Campo | Tipo | Reglas |
-|---|---|---|
-| `id` | `uuid` | PK |
-| `measurement_id` | `uuid` | referencia a `measurements` |
-| `event_type` | `text` | inicialmente `UPSERT` o `DELETE` |
-| `created_at` | `timestamptz` | servidor |
-| `processed_at` | `timestamptz` | `null` mientras esté pendiente |
-| `attempt_count` | `integer` | por defecto `0` |
-| `last_error` | `text` | mensaje saneado, sin datos médicos ni tokens |
-
-Restricción única recomendada: `(measurement_id, event_type, versión-de-mutación)`. La representación concreta de la versión debe cerrarse al crear la migración para permitir alta y posterior eliminación sin colisiones.
-
-### Configuración de integración
-
-Los tokens de Microsoft no deben almacenarse en tablas accesibles al cliente. Usar almacenamiento cifrado de secretos del entorno o una tabla exclusivamente de servidor con cifrado y permisos restringidos. No incluirlos en exportaciones ni backups.
+No existe modelo persistente para exportaciones: CSV y PDF son artefactos transitorios generados bajo demanda a partir de las mediciones activas filtradas. No hay outbox de copia externa ni credenciales de terceros asociadas.
 
 ## Room (Android)
 
@@ -97,6 +81,13 @@ fecha_hora;sistolica;diastolica;pulso;notas
 - Fechas ISO 8601 con offset explícito de la zona local usada al exportar.
 - Escapado CSV estándar para notas.
 - No exportar metadatos internos, borradores, eliminados ni tokens.
+
+## PDF
+
+- Informe compartible generado bajo demanda con los registros activos incluidos en los filtros.
+- Presenta fechas inequívocas en la zona local y los valores canónicos de la medición.
+- No incluye metadatos internos, borradores ni registros eliminados.
+- El archivo generado es transitorio y no forma parte del modelo canónico.
 
 ## Importación histórica
 

@@ -6,7 +6,7 @@
 - PostgreSQL/Supabase es la fuente de verdad compartida.
 - UUID generado por el cliente para reintentos idempotentes.
 - Una sola regla de cálculo y casos de prueba equivalentes en todos los clientes.
-- Secretos de administración y tokens de Microsoft nunca se distribuyen en Android ni en JavaScript público.
+- No hay integraciones cloud externas automáticas ni credenciales de terceros para exportar o compartir.
 - Diseño mínimo compatible con niveles gratuitos; revisar cuotas antes del despliegue.
 
 ## Componentes
@@ -16,9 +16,9 @@ Android (Kotlin + Compose)
   └─ Room + cola de sincronización
              │ HTTPS
 Web          │
-  └─ UI + capa servidor ── Supabase API/Functions ── PostgreSQL
-                                      │
-                                      └─ trabajador/outbox ── Microsoft Graph ── OneDrive
+  └─ UI ──────────────── Supabase API/Functions ── PostgreSQL
+
+Android/Web ── exportación bajo demanda CSV/PDF ── compartir/descargar
 ```
 
 ### Estructura del repositorio
@@ -41,17 +41,19 @@ El cálculo se implementa de forma nativa en Kotlin y TypeScript. Ambos usan `co
 - WorkManager ejecuta reintentos con conectividad y backoff.
 - El asistente de alta conserva Medición 1 y 2 solo como estado/borrador. Al confirmar crea una medición local con UUID y estado pendiente.
 - El historial lee Room para responder sin conexión.
+- CSV y PDF se generan bajo demanda y se entregan al mecanismo nativo de compartir, que permite elegir cualquier aplicación instalada compatible.
 
 ### Web
 
 - Aplicación web instalable en un alojamiento gratuito compatible.
 - Usa el mismo flujo de tres pantallas y los mismos vectores de prueba de medias.
-- Las operaciones privilegiadas y Microsoft Graph pasan por código de servidor/funciones; no se exponen claves secretas al navegador.
 - CSV se genera con los registros filtrados visibles desde la fuente de verdad.
+- PDF se genera como informe compartible del conjunto filtrado.
+- Los archivos se descargan y, si el navegador ofrece una capacidad estándar de compartir archivos, pueden compartirse con fallback a descarga.
 
 ### Supabase
 
-- PostgreSQL almacena mediciones, eliminaciones lógicas y eventos de respaldo.
+- PostgreSQL almacena mediciones y eliminaciones lógicas como fuente canónica cloud.
 - API o Edge Functions validan entradas, aplican acceso privado e idempotencia.
 - Row Level Security debe estar activada. La clave `service_role` solo existe en servidor.
 - Realtime no es requisito; sincronización por consulta incremental es suficiente.
@@ -78,25 +80,22 @@ Eliminar offline establece `deleted_at` local y `PENDING_DELETE`; el servidor ap
 
 El cursor y los estados de sincronización son metadatos locales, no campos de negocio. Los fallos permanecen reintentables y visibles; no se descartan cambios silenciosamente.
 
-## Respaldo en OneDrive
+## Compartir y exportar
 
-Tras aceptar una nueva medición en PostgreSQL, la misma transacción crea un evento en una tabla outbox. Un trabajador toma eventos pendientes y llama a Microsoft Graph. Así, un fallo de OneDrive no revierte ni pierde la medición.
+La copia externa es una acción manual bajo demanda. Android y web generan CSV o PDF a partir de los registros activos incluidos en los filtros actuales; estos archivos no sustituyen a Supabase como fuente canónica ni requieren outbox, trabajador o credenciales de terceros.
 
-- Autorización OAuth de Microsoft una vez; refresh token cifrado y solo en servidor.
-- Evento único por `measurement_id` y tipo para evitar duplicados.
-- Reintentos con backoff y registro de último error.
-- El MVP mantiene en la carpeta `miTension` un CSV acumulativo que se reemplaza tras cada alta sincronizada y tras cada eliminación.
-- Se conservan copias diarias durante 30 días para recuperación.
-- Una eliminación debe quedar reflejada en el siguiente respaldo; no se borra evidencia local de la cola hasta confirmación.
+- Android delega el destino al mecanismo nativo de compartir.
+- Web usa capacidades estándar del navegador para compartir cuando sean viables y ofrece siempre la descarga como fallback.
+- OneDrive, Google Drive y correo son posibles destinos elegidos por el usuario, no integraciones automáticas de miTension.
 
 ## Seguridad y operación
 
 - HTTPS, RLS, validación en servidor y mínimo privilegio.
 - Variables secretas en el gestor del alojamiento/Supabase.
 - No registrar valores médicos, tokens ni notas en logs de diagnóstico.
-- Exportación y copias se consideran datos sensibles.
+- Los archivos exportados y compartidos se consideran datos sensibles.
 - Migraciones SQL versionadas y reproducibles.
-- Pruebas automáticas para cálculo, validación, idempotencia, sincronización y RLS.
+- Pruebas automáticas para cálculo, validación, idempotencia, sincronización, RLS, exportación y compartir.
 
 ## Orden de implementación
 
@@ -104,5 +103,5 @@ Tras aceptar una nueva medición en PostgreSQL, la misma transacción crea un ev
 2. Modelo/migraciones y políticas de acceso.
 3. Android offline y sincronización.
 4. Web, filtros y CSV.
-5. Outbox y OneDrive.
+5. Exportación CSV/PDF y compartir bajo demanda.
 6. Inspección e importación del Excel histórico.

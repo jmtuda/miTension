@@ -24,10 +24,10 @@ Guardar cada media como entero, redondeando `.5` hacia arriba (`ROUND_HALF_UP`).
 
 - Android: alta con el flujo obligatorio, historial y eliminación.
 - Android offline: Room como fuente local y sincronización automática al recuperar conexión.
-- Web: alta con el mismo flujo, historial, filtros y exportación CSV.
+- Web: alta con el mismo flujo, historial, filtros y exportación CSV/PDF.
 - Nube: Supabase con PostgreSQL.
 - Eliminación sin edición; la eliminación será lógica (`soft delete`).
-- Copia en OneDrive tras cada nueva medición sincronizada, usando Microsoft Graph y una autorización inicial de la cuenta Microsoft.
+- Compartir/exportar manualmente bajo demanda en CSV o PDF, sin copia cloud automática externa.
 - Importación del Excel histórico al final del MVP, después de inspeccionar y validar su estructura real.
 
 ## Fuera del MVP
@@ -35,11 +35,10 @@ Guardar cada media como entero, redondeando `.5` hacia arriba (`ROUND_HALF_UP`).
 - Varios usuarios y gestión de cuentas.
 - Edición de mediciones guardadas.
 - Gráficas.
-- Informes PDF.
 - Integración con dispositivos médicos.
 - Conservación histórica de las dos lecturas originales.
 
-Gráficas y PDF quedan previstas para v2.
+Las gráficas quedan previstas para v2.
 
 ## Reglas funcionales
 
@@ -51,6 +50,9 @@ Gráficas y PDF quedan previstas para v2.
 - La eliminación oculta el registro inmediatamente y usa `soft delete`; no hay papelera visible en el MVP.
 - La exportación CSV respeta los filtros activos y excluye eliminados.
 - El CSV usa UTF-8 con BOM, separador `;` y las columnas `fecha_hora;sistolica;diastolica;pulso;notas`.
+- El PDF es un informe compartible generado bajo demanda con el conjunto filtrado y sin registros eliminados.
+- Android usa el mecanismo nativo de compartir para enviar CSV o PDF a aplicaciones instaladas, como OneDrive, Google Drive o correo.
+- Web descarga CSV o PDF y, cuando las capacidades estándar del navegador lo permitan, ofrece compartir con fallback a descarga.
 - La app informa de forma visible si hay cambios pendientes de sincronizar o un error persistente.
 
 ## Criterios de éxito
@@ -59,7 +61,7 @@ Gráficas y PDF quedan previstas para v2.
 - Android permite completar el flujo sin Internet y sincroniza después sin duplicados.
 - Android y web calculan exactamente el mismo resultado.
 - Una eliminación offline termina reflejada en todos los clientes.
-- Cada alta aceptada por la nube dispara un respaldo idempotente en OneDrive.
+- CSV y PDF pueden generarse y compartirse manualmente desde Android y web sin alterar los datos canónicos.
 - El producto puede desplegarse dentro de los niveles gratuitos elegidos.
 
 ## Decisiones pendientes
