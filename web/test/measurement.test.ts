@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { test } from "node:test";
-import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
+import { test } from "vitest";
 
 import {
   addSecondReading,
@@ -47,8 +47,7 @@ test("validates only documented unequivocal invariants", () => {
 });
 
 function contractCases(): Array<[number, number, number]> {
-  const contractUrl = new URL("../../contracts/measurement-mean-cases.csv", import.meta.url);
-  return readFileSync(fileURLToPath(contractUrl), "utf8")
+  return readFileSync(resolve(process.cwd(), "../contracts/measurement-mean-cases.csv"), "utf8")
     .trim()
     .split("\n")
     .slice(1)
