@@ -97,6 +97,11 @@ La copia externa es una acción manual bajo demanda. Android y web generan CSV o
 - Los archivos exportados y compartidos se consideran datos sensibles.
 - Migraciones SQL versionadas y reproducibles.
 - Pruebas automáticas para cálculo, validación, idempotencia, sincronización, RLS, exportación y compartir.
+- Despliegue web estático en Vercel con `web/` como raíz y variables públicas de Supabase configuradas por entorno.
+- La CLI de Supabase aplica las migraciones versionadas mediante `link`, `db push --dry-run` y `db push`; nunca se resetea el proyecto real.
+- El APK instalable de verificación es una compilación `debug` transitoria configurada por variables de entorno o propiedades Gradle locales.
+
+El procedimiento operativo y el checklist manual E2E están en [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Orden de implementación
 

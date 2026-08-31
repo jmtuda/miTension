@@ -4,7 +4,8 @@ Aplicación Android y web para registrar y consultar mediciones personales de te
 
 ## Estado actual
 
-P0 está completada. La aplicación web cubre P1.1–P1.6.
+P0 y P1.1–P1.13 están completadas. P1.14 queda pendiente de ejecutar contra una
+instancia real de Supabase.
 
 ## Aplicación web
 
@@ -27,3 +28,4 @@ ni almacenan credenciales de Supabase.
 - [Modelo de datos](docs/DATA_MODEL.md)
 - [Backlog](docs/BACKLOG.md)
 - [Estado actual](docs/STATUS.md)
+- [Despliegue y prueba E2E](docs/DEPLOYMENT.md)

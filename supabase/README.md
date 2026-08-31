@@ -2,6 +2,9 @@
 
 Las migraciones reproducibles viven en `migrations/` y las pruebas SQL en `tests/`.
 
+La creación del proyecto remoto, el enlace con la CLI y la aplicación segura de
+las migraciones se describen en [`docs/DEPLOYMENT.md`](../docs/DEPLOYMENT.md).
+
 Para validar el esquema contra PostgreSQL:
 
 ```sh

@@ -41,7 +41,7 @@ Estados sugeridos: `Pendiente`, `En curso`, `Bloqueado`, `Hecho`. Prioridades: P
 
 - [x] **P1.11 Pruebas automáticas:** cálculo, validación, Room, sincronización, RLS, CSV, PDF, compartir y autenticación.
 - [x] **P1.12 CI:** compilación, lint y pruebas Android/web/SQL en cada cambio.
-- [ ] **P1.13 Despliegue gratuito:** documentar configuración, secretos, cuotas y procedimiento de recuperación.
+- [x] **P1.13 Despliegue gratuito:** preparación reproducible de Supabase, web y APK; configuración sin secretos, cuotas y procedimiento de recuperación documentados.
 - [ ] **P1.14 Prueba extremo a extremo:** alta offline, reconexión, web, eliminación y exportación/compartir manual.
 
 ## P1 — Importación al final del MVP
