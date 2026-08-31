@@ -12,11 +12,11 @@ Estados sugeridos: `Pendiente`, `En curso`, `Bloqueado`, `Hecho`. Prioridades: P
 
 ## P0 — Android offline-first
 
-- [ ] **P0.6 Flujo Medición 1:** entrada y validación; no persiste registro definitivo.
-- [ ] **P0.7 Flujo Medición 2:** entrada y validación; permite volver sin perder la primera.
-- [ ] **P0.8 Confirmación:** muestra lecturas, medias, fecha/hora y nota; cancelar no guarda.
-- [ ] **P0.9 Room:** entidad canónica, DAO, migraciones locales y estados de sincronización.
-- [ ] **P0.10 Historial offline:** ordenar por fecha, ocultar eliminados y mostrar pendientes/errores.
+- [x] **P0.6 Flujo Medición 1:** entrada y validación; no persiste registro definitivo.
+- [x] **P0.7 Flujo Medición 2:** entrada y validación; permite volver sin perder la primera.
+- [x] **P0.8 Confirmación:** muestra lecturas, medias, fecha/hora y nota; cancelar no guarda.
+- [x] **P0.9 Room:** entidad canónica, DAO, migraciones locales y estados de sincronización.
+- [x] **P0.10 Historial offline:** ordenar por fecha, ocultar eliminados y mostrar pendientes/errores.
 - [ ] **P0.11 Alta sincronizable:** UUID estable, WorkManager, reintentos y upsert sin duplicados.
 - [ ] **P0.12 Eliminación lógica:** confirmación, tombstone offline y propagación sin edición.
 - [ ] **P0.13 Sincronización incremental:** cursor estable, descarga de altas/eliminaciones y recuperación tras interrupciones.
