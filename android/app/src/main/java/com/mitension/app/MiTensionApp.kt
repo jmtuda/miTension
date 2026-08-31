@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.weight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -23,10 +24,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mitension.app.data.MeasurementDetail
+import com.mitension.app.export.ExportFormat
+import com.mitension.app.export.filterMeasurements
+import com.mitension.app.export.shareMeasurements
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -90,7 +96,25 @@ fun MiTensionApp(viewModel: MeasurementsViewModel) {
 }
 
 @Composable private fun HistoryScreen(items: List<MeasurementDetail>, onNew: () -> Unit, onDetail: (String) -> Unit, modifier: Modifier) {
-    Column(modifier.fillMaxSize().padding(16.dp)) { Button(onClick = onNew) { Text("Nueva medición") }; LazyColumn { items(items, key = { it.id }) { item -> Card(Modifier.fillMaxWidth().padding(vertical = 4.dp).clickable { onDetail(item.id) }) { Text("${format(item.measuredAt)} · ${item.systolic}/${item.diastolic} · ${item.pulse} ppm", Modifier.padding(16.dp)) } } } }
+    val context = LocalContext.current
+    var fromText by remember { mutableStateOf("") }
+    var toText by remember { mutableStateOf("") }
+    val from = fromText.takeIf(String::isNotBlank)?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
+    val to = toText.takeIf(String::isNotBlank)?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
+    val filtered = filterMeasurements(items, from, to)
+    Column(modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Button(onClick = onNew) { Text("Nueva medición") }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedTextField(fromText, { fromText = it }, label = { Text("Desde (AAAA-MM-DD)") }, modifier = Modifier.weight(1f))
+            OutlinedTextField(toText, { toText = it }, label = { Text("Hasta (AAAA-MM-DD)") }, modifier = Modifier.weight(1f))
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = { shareMeasurements(context, filtered, ExportFormat.CSV) }, enabled = filtered.isNotEmpty()) { Text("Compartir CSV") }
+            Button(onClick = { shareMeasurements(context, filtered, ExportFormat.PDF) }, enabled = filtered.isNotEmpty()) { Text("Compartir PDF") }
+        }
+        if (filtered.isEmpty()) Text("No hay mediciones en el intervalo seleccionado.")
+        LazyColumn { items(filtered, key = { it.id }) { item -> Card(Modifier.fillMaxWidth().padding(vertical = 4.dp).clickable { onDetail(item.id) }) { Text("${format(item.measuredAt)} · ${item.systolic}/${item.diastolic} · ${item.pulse} ppm", Modifier.padding(16.dp)) } } }
+    }
 }
 
 @Composable private fun DetailScreen(item: MeasurementDetail?, onBack: () -> Unit, onDelete: (MeasurementDetail) -> Unit, modifier: Modifier) {

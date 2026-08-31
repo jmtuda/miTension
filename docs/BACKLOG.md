@@ -32,10 +32,10 @@ Estados sugeridos: `Pendiente`, `En curso`, `Bloqueado`, `Hecho`. Prioridades: P
 
 ## P1 — Compartir y exportar
 
-- [ ] **P1.7 Exportación CSV en Android:** generar bajo demanda el conjunto filtrado con el formato aprobado.
-- [ ] **P1.8 Informe PDF en Android y web:** generar bajo demanda un informe compartible de los registros activos filtrados.
-- [ ] **P1.9 Compartir en Android:** usar el mecanismo nativo para enviar CSV/PDF a aplicaciones instaladas.
-- [ ] **P1.10 Compartir/descargar en web:** compartir CSV/PDF cuando el navegador lo permita y usar descarga como fallback.
+- [x] **P1.7 Exportación CSV en Android:** generar bajo demanda el conjunto filtrado con el formato aprobado.
+- [x] **P1.8 Informe PDF en Android y web:** generar bajo demanda un informe compartible de los registros activos filtrados.
+- [x] **P1.9 Compartir en Android:** usar el mecanismo nativo para enviar CSV/PDF a aplicaciones instaladas.
+- [x] **P1.10 Compartir/descargar en web:** compartir CSV/PDF cuando el navegador lo permita y usar descarga como fallback.
 
 ## P1 — Calidad y entrega
 
