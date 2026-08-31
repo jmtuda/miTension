@@ -92,6 +92,7 @@ class MeasurementSyncEngineTest {
         engine.synchronize(session)
         assertEquals(1, api.rows(USER).count { it.id == "local" })
         assertNotNull(dao.activeById("remote", USER))
+        Unit
     }
 
     @Test fun `server and Room isolation prevent another user from leaking into sync`() = runBlocking {
