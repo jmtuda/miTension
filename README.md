@@ -8,3 +8,4 @@ Aplicación Android y web para registrar y consultar mediciones personales de te
 - [Arquitectura](docs/ARCHITECTURE.md)
 - [Modelo de datos](docs/DATA_MODEL.md)
 - [Backlog](docs/BACKLOG.md)
+- [Estado actual](docs/STATUS.md)
