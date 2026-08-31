@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-Aplicación personal para registrar y consultar la tensión arterial desde Android y web. El MVP es para un único usuario, debe funcionar sin coste y no tendrá inicio de sesión interactivo en la aplicación.
+Aplicación personal para registrar y consultar la tensión arterial desde Android y web. El MVP es para un único usuario, debe funcionar sin coste y no tendrá un inicio de sesión cotidiano: se autoriza una vez por dispositivo y se conserva la sesión.
 
 ## Regla principal de registro
 
@@ -16,9 +16,9 @@ Una lectura aislada nunca se guarda como medición definitiva. El flujo obligato
 
 Cancelar antes de confirmar no crea ningún registro. Las dos lecturas pueden mantenerse como borrador local durante el flujo, pero el MVP no las conserva en la base de datos definitiva.
 
-### Redondeo propuesto
+### Redondeo
 
-Guardar cada media como entero, redondeando `.5` hacia arriba (`ROUND_HALF_UP`). Ejemplo: `121` y `122` producen `122`. Esta propuesta se adopta para el MVP salvo decisión contraria antes de implementar el cálculo; debe existir una sola función compartida o casos de prueba comunes para Android, web e importación.
+Guardar cada media como entero, redondeando `.5` hacia arriba (`ROUND_HALF_UP`). Ejemplo: `121` y `122` producen `122`. Debe existir una sola función compartida o casos de prueba comunes para Android, web e importación.
 
 ## Alcance del MVP
 
@@ -43,12 +43,14 @@ Gráficas y PDF quedan previstas para v2.
 
 ## Reglas funcionales
 
-- Campos obligatorios: fecha/hora, sistólica, diastólica y pulso. Nota opcional.
+- Campos obligatorios: fecha/hora, sistólica, diastólica y pulso. Nota de texto libre opcional, con un máximo de 1.000 caracteres.
 - Fecha/hora y nota se introducen o revisan en la confirmación, no dos veces.
-- Validar campos y rangos de plausibilidad antes de avanzar. Los límites exactos deben definirse y probarse antes de cerrar la pantalla.
+- Por defecto, la fecha/hora es la actual. Se guarda el instante en UTC y se presenta en la zona local del dispositivo.
+- Validar únicamente enteros positivos y `diastolic < systolic`. No se fijan rangos clínicos ni avisos médicos en el MVP.
 - Un registro confirmado no se edita; puede eliminarse después de una confirmación explícita.
-- El historial normal oculta registros con `deleted_at`.
+- La eliminación oculta el registro inmediatamente y usa `soft delete`; no hay papelera visible en el MVP.
 - La exportación CSV respeta los filtros activos y excluye eliminados.
+- El CSV usa UTF-8 con BOM, separador `;` y las columnas `fecha_hora;sistolica;diastolica;pulso;notas`.
 - La app informa de forma visible si hay cambios pendientes de sincronizar o un error persistente.
 
 ## Criterios de éxito
@@ -60,13 +62,6 @@ Gráficas y PDF quedan previstas para v2.
 - Cada alta aceptada por la nube dispara un respaldo idempotente en OneDrive.
 - El producto puede desplegarse dentro de los niveles gratuitos elegidos.
 
-## Decisiones abiertas
+## Decisiones pendientes
 
-Antes de implementar las partes afectadas hay que cerrar:
-
-1. Rangos aceptables y si un valor fuera de rango se bloquea o solo advierte.
-2. Mecanismo de acceso privado sin login interactivo (véase `ARCHITECTURE.md`).
-3. Formato, ubicación y política de retención del respaldo de OneDrive.
-4. Zona horaria de presentación y formato final del CSV.
-5. Estructura real del Excel histórico y reglas de resolución de filas inválidas.
-
+La estructura real del Excel histórico y las reglas para sus filas inválidas se decidirán al final del MVP, después de inspeccionar el archivo real. No bloquean el desarrollo actual.
