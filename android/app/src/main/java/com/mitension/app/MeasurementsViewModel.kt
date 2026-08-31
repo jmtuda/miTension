@@ -21,4 +21,8 @@ class MeasurementsViewModel(private val repository: MeasurementsRepository) : Vi
     fun load(id: String, onLoaded: (MeasurementDetail?) -> Unit) = viewModelScope.launch {
         onLoaded(repository.measurement(id))
     }
+
+    fun delete(id: String, onDeleted: () -> Unit) = viewModelScope.launch {
+        if (repository.delete(id)) onDeleted()
+    }
 }

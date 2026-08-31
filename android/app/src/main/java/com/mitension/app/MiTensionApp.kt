@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
@@ -55,7 +56,9 @@ fun MiTensionApp(viewModel: MeasurementsViewModel) {
                     viewModel.save(draft) { screen = Screen.HISTORY }
                 }
             }, onCancel = { flow.cancel(); screen = Screen.HISTORY }, Modifier.padding(padding))
-            Screen.DETAIL -> DetailScreen(selected, onBack = { screen = Screen.HISTORY }, Modifier.padding(padding))
+            Screen.DETAIL -> DetailScreen(selected, onBack = { screen = Screen.HISTORY }, onDelete = { item ->
+                viewModel.delete(item.id) { selected = null; screen = Screen.HISTORY }
+            }, Modifier.padding(padding))
         }
     }
 }
@@ -90,6 +93,25 @@ fun MiTensionApp(viewModel: MeasurementsViewModel) {
     Column(modifier.fillMaxSize().padding(16.dp)) { Button(onClick = onNew) { Text("Nueva medición") }; LazyColumn { items(items, key = { it.id }) { item -> Card(Modifier.fillMaxWidth().padding(vertical = 4.dp).clickable { onDetail(item.id) }) { Text("${format(item.measuredAt)} · ${item.systolic}/${item.diastolic} · ${item.pulse} ppm", Modifier.padding(16.dp)) } } } }
 }
 
-@Composable private fun DetailScreen(item: MeasurementDetail?, onBack: () -> Unit, modifier: Modifier) { Column(modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) { Text("Detalle"); if (item != null) { Text(format(item.measuredAt)); Text("${item.systolic}/${item.diastolic} · ${item.pulse} ppm"); item.notes?.let { Text(it) } }; Button(onClick = onBack) { Text("Volver") } } }
+@Composable private fun DetailScreen(item: MeasurementDetail?, onBack: () -> Unit, onDelete: (MeasurementDetail) -> Unit, modifier: Modifier) {
+    var confirmingDelete by remember { mutableStateOf(false) }
+    Column(modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text("Detalle")
+        if (item != null) {
+            Text(format(item.measuredAt)); Text("${item.systolic}/${item.diastolic} · ${item.pulse} ppm"); item.notes?.let { Text(it) }
+            Button(onClick = { confirmingDelete = true }) { Text("Eliminar") }
+        }
+        Button(onClick = onBack) { Text("Volver") }
+    }
+    if (confirmingDelete && item != null) {
+        AlertDialog(
+            onDismissRequest = { confirmingDelete = false },
+            title = { Text("Eliminar medición") },
+            text = { Text("La medición se ocultará ahora y se eliminará de forma lógica al sincronizar.") },
+            confirmButton = { Button(onClick = { confirmingDelete = false; onDelete(item) }) { Text("Eliminar") } },
+            dismissButton = { Button(onClick = { confirmingDelete = false }) { Text("Cancelar") } },
+        )
+    }
+}
 
 private fun format(instant: Instant): String = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(ZoneId.systemDefault()).format(instant)

@@ -13,6 +13,7 @@ enum class SyncState { PENDING_CREATE, PENDING_DELETE, SYNCED, ERROR }
 @Entity(tableName = "measurements")
 data class LocalMeasurement(
     @PrimaryKey val id: String,
+    val userId: String,
     val measuredAt: Long,
     val systolic: Int,
     val diastolic: Int,
@@ -21,7 +22,14 @@ data class LocalMeasurement(
     val deletedAt: Long?,
     val syncState: String,
     val lastSyncError: String?,
-    val serverUpdatedAt: Long?,
+    val serverUpdatedAt: String?,
+)
+
+@Entity(tableName = "sync_cursors", primaryKeys = ["userId"])
+data class SyncCursor(
+    val userId: String,
+    val updatedAt: String,
+    val measurementId: String,
 )
 
 data class MeasurementDetail(
@@ -37,13 +45,18 @@ interface MeasurementsRepository {
     fun activeMeasurements(): Flow<List<MeasurementDetail>>
     suspend fun measurement(id: String): MeasurementDetail?
     suspend fun save(confirmed: ConfirmedMeasurement, measuredAt: Instant, notes: String?): MeasurementDetail
+    suspend fun delete(id: String): Boolean
 }
 
-class RoomMeasurementsRepository(private val dao: MeasurementsDao) : MeasurementsRepository {
+class RoomMeasurementsRepository(
+    private val dao: MeasurementsDao,
+    private val userId: String,
+    private val requestSync: () -> Unit = {},
+) : MeasurementsRepository {
     override fun activeMeasurements(): Flow<List<MeasurementDetail>> =
-        dao.observeActive().map { measurements -> measurements.map(LocalMeasurement::toDetail) }
+        dao.observeActive(userId).map { measurements -> measurements.map(LocalMeasurement::toDetail) }
 
-    override suspend fun measurement(id: String): MeasurementDetail? = dao.activeById(id)?.toDetail()
+    override suspend fun measurement(id: String): MeasurementDetail? = dao.activeById(id, userId)?.toDetail()
 
     override suspend fun save(
         confirmed: ConfirmedMeasurement,
@@ -52,6 +65,7 @@ class RoomMeasurementsRepository(private val dao: MeasurementsDao) : Measurement
     ): MeasurementDetail {
         val entity = LocalMeasurement(
             id = UUID.randomUUID().toString(),
+            userId = userId,
             measuredAt = measuredAt.toEpochMilli(),
             systolic = confirmed.values.systolic,
             diastolic = confirmed.values.diastolic,
@@ -63,7 +77,14 @@ class RoomMeasurementsRepository(private val dao: MeasurementsDao) : Measurement
             serverUpdatedAt = null,
         )
         dao.insert(entity)
+        requestSync()
         return entity.toDetail()
+    }
+
+    override suspend fun delete(id: String): Boolean {
+        val changed = dao.markPendingDelete(id, userId, Instant.now().toEpochMilli()) > 0
+        if (changed) requestSync()
+        return changed
     }
 }
 

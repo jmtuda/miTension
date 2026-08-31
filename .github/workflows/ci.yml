@@ -64,4 +64,4 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "7.6.4"
-      - run: gradle :domain:test :app:assembleDebug
+      - run: gradle :domain:test :app:testDebugUnitTest :app:assembleDebug
