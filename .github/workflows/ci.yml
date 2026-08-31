@@ -29,7 +29,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 11
+          java-version: 17
       - uses: android-actions/setup-android@v3
       - run: sdkmanager "platforms;android-33"
       - uses: gradle/actions/setup-gradle@v4
