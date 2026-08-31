@@ -28,7 +28,8 @@ android/app/       esqueleto de la aplicación Compose
 android/domain/    dominio Kotlin puro y pruebas
 web/               dominio TypeScript y futura aplicación web
 contracts/         vectores de comportamiento comunes
-supabase/          futuras migraciones y configuración
+supabase/          migraciones y pruebas de PostgreSQL/Supabase
+docs/              documentación que actúa como fuente de verdad
 ```
 
 El cálculo se implementa de forma nativa en Kotlin y TypeScript. Ambos usan `contracts/measurement-mean-cases.csv` como contrato ejecutable para evitar divergencias sin introducir una dependencia compartida entre plataformas.
@@ -57,12 +58,9 @@ El cálculo se implementa de forma nativa en Kotlin y TypeScript. Ambos usan `co
 
 ## Acceso de usuario único
 
-“Sin login” significa sin pantalla de autenticación cotidiana, no una base de datos pública. Antes de publicar debe elegirse una de estas opciones:
+“Sin login” significa sin pantalla de autenticación cotidiana, no una base de datos pública. El MVP usará Supabase Auth con una autorización inicial por dispositivo o navegador y una sesión persistente. Después la aplicación abre sin pedir credenciales mientras la sesión siga siendo válida.
 
-1. **Recomendada:** autorización inicial única por dispositivo/navegador y sesión persistente de Supabase Auth; después la app abre sin pedir credenciales mientras la sesión sea válida.
-2. Aprovisionamiento manual de una credencial revocable por instalación, guardada en almacenamiento seguro y validada por una función de servidor.
-
-No se acepta usar tablas abiertas con la clave anónima ni incluir `service_role` o secretos compartidos permanentes en el cliente. Para el MVP, la decisión recomendada es la opción 1; la UX concreta se cierra antes de implementar autenticación y RLS.
+No se acepta usar tablas abiertas con la clave anónima ni incluir `service_role` o secretos compartidos permanentes en el cliente. Las políticas RLS y sus pruebas corresponden a P0.5.
 
 ## Sincronización
 
@@ -85,7 +83,8 @@ Tras aceptar una nueva medición en PostgreSQL, la misma transacción crea un ev
 - Autorización OAuth de Microsoft una vez; refresh token cifrado y solo en servidor.
 - Evento único por `measurement_id` y tipo para evitar duplicados.
 - Reintentos con backoff y registro de último error.
-- Propuesta MVP: mantener un archivo JSON canónico reemplazable y un CSV legible en una carpeta `miTension`; cerrar formato y retención antes de implementarlo.
+- El MVP mantiene en la carpeta `miTension` un CSV acumulativo que se reemplaza tras cada alta sincronizada y tras cada eliminación.
+- Se conservan copias diarias durante 30 días para recuperación.
 - Una eliminación debe quedar reflejada en el siguiente respaldo; no se borra evidencia local de la cola hasta confirmación.
 
 ## Seguridad y operación

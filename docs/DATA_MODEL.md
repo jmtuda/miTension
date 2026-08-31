@@ -3,7 +3,7 @@
 ## Convenciones
 
 - Identificadores UUID generados en cliente.
-- Fechas en PostgreSQL como `timestamptz` en UTC; la UI las presenta en la zona elegida.
+- Fechas en PostgreSQL como `timestamptz` en UTC; la UI las presenta en la zona local del dispositivo.
 - Valores de presión y pulso como enteros.
 - Migraciones SQL bajo control de versiones.
 - La base canónica guarda solo la media confirmada, no Medición 1 y 2.
@@ -19,12 +19,12 @@
 | `systolic` | `smallint` | obligatorio; media redondeada |
 | `diastolic` | `smallint` | obligatorio; media redondeada |
 | `pulse` | `smallint` | obligatorio; media redondeada |
-| `notes` | `text` | opcional; normalizar vacío a `null` |
+| `notes` | `text` | opcional; máximo 1.000 caracteres; normalizar vacío a `null` |
 | `created_at` | `timestamptz` | obligatorio; servidor, `now()` |
 | `updated_at` | `timestamptz` | obligatorio; servidor; cambia en cada mutación |
 | `deleted_at` | `timestamptz` | `null` si está activo; tombstone al eliminar |
 
-Restricciones mínimas: enteros positivos, `diastolic < systolic` y límites técnicos amplios que impidan datos imposibles. Los rangos clínicos/avisos de UX son una decisión pendiente y no deben inventarse en la migración.
+Restricciones mínimas: enteros positivos y `diastolic < systolic`. No se establecen rangos clínicos ni avisos médicos.
 
 Índices:
 
@@ -83,19 +83,17 @@ Como las entradas son enteras, se puede implementar sin coma flotante. Vectores 
 
 ## CSV
 
-Propuesta de columnas, en este orden:
+Columnas, en este orden:
 
 ```text
-id,measured_at,systolic,diastolic,pulse,notes
+fecha_hora;sistolica;diastolica;pulso;notas
 ```
 
-- UTF-8 con cabecera.
+- UTF-8 con BOM, cabecera y separador `;`.
 - Una fila por registro activo incluido en los filtros.
-- Fechas ISO 8601 con offset explícito.
+- Fechas ISO 8601 con offset explícito de la zona local usada al exportar.
 - Escapado CSV estándar para notas.
 - No exportar metadatos internos, borradores, eliminados ni tokens.
-
-Separador y convención regional quedan por confirmar antes de cerrar la exportación.
 
 ## Importación histórica
 
@@ -106,4 +104,3 @@ No diseñar el importador hasta recibir el Excel real. Entonces:
 3. ejecutar una previsualización sin escritura;
 4. presentar recuentos y errores;
 5. importar idempotentemente con copia previa y trazabilidad.
-
