@@ -60,7 +60,9 @@ El cálculo se implementa de forma nativa en Kotlin y TypeScript. Ambos usan `co
 
 “Sin login” significa sin pantalla de autenticación cotidiana, no una base de datos pública. El MVP usará Supabase Auth con una autorización inicial por dispositivo o navegador y una sesión persistente. Después la aplicación abre sin pedir credenciales mientras la sesión siga siendo válida.
 
-No se acepta usar tablas abiertas con la clave anónima ni incluir `service_role` o secretos compartidos permanentes en el cliente. Las políticas RLS y sus pruebas corresponden a P0.5.
+Se aprovisiona una única cuenta y se desactiva el registro público de nuevas cuentas. Cada medición pertenece a `auth.uid()` y las políticas RLS solo permiten al usuario autenticado leer, crear y aplicar soft delete sobre sus propias filas. El rol anónimo no tiene acceso y no se permite el borrado físico.
+
+La clave pública de Supabase puede distribuirse en los clientes junto con la sesión persistente del usuario; `service_role`, contraseñas y secretos compartidos permanentes solo existen en entornos de servidor. La implementación concreta de las pantallas y el almacenamiento seguro de sesión pertenece a los clientes posteriores.
 
 ## Sincronización
 

@@ -28,8 +28,11 @@ jobs:
       PGDATABASE: mitension_test
     steps:
       - uses: actions/checkout@v4
+      - run: psql -v ON_ERROR_STOP=1 -f supabase/tests/auth_test_setup.sql
       - run: psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608310001_create_measurements.sql
       - run: psql -v ON_ERROR_STOP=1 -f supabase/tests/measurements_schema.test.sql
+      - run: psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608310002_add_measurement_ownership_rls.sql
+      - run: psql -v ON_ERROR_STOP=1 -f supabase/tests/measurements_rls.test.sql
 
   web:
     runs-on: ubuntu-latest
