@@ -69,7 +69,7 @@ interface SupabaseAuthApi {
 
 class SupabaseRestAuthApi(
     private val baseUrl: String,
-    private val anonKey: String,
+    private val publishableKey: String,
     private val clock: Clock = Clock.systemUTC(),
 ) : SupabaseAuthApi {
     override suspend fun signIn(email: String, password: String): PersistedAuthSession = request(
@@ -83,12 +83,12 @@ class SupabaseRestAuthApi(
     )
 
     private suspend fun request(grantType: String, body: JSONObject): PersistedAuthSession = withContext(Dispatchers.IO) {
-        check(baseUrl.isNotBlank() && anonKey.isNotBlank()) { "Supabase no está configurado" }
+        check(baseUrl.isNotBlank() && publishableKey.isNotBlank()) { "Supabase no está configurado" }
         val connection = URI("${baseUrl.trimEnd('/')}/auth/v1/token?grant_type=$grantType").toURL().openConnection() as HttpURLConnection
         try {
             connection.requestMethod = "POST"
             connection.doOutput = true
-            connection.setRequestProperty("apikey", anonKey)
+            connection.setRequestProperty("apikey", publishableKey)
             connection.setRequestProperty("Content-Type", "application/json")
             connection.outputStream.use { it.write(body.toString().toByteArray(Charsets.UTF_8)) }
             val status = connection.responseCode
@@ -104,12 +104,12 @@ class SupabaseRestAuthApi(
 
 class SupabaseAuthManager(
     private val baseUrl: String,
-    private val anonKey: String,
+    private val publishableKey: String,
     private val store: AuthSessionStore,
     private val api: SupabaseAuthApi,
     private val clock: Clock = Clock.systemUTC(),
 ) {
-    val isConfigured: Boolean get() = baseUrl.isNotBlank() && anonKey.isNotBlank()
+    val isConfigured: Boolean get() = baseUrl.isNotBlank() && publishableKey.isNotBlank()
 
     suspend fun signIn(email: String, password: String): SupabaseSession {
         val persisted = api.signIn(email.trim(), password)
@@ -127,7 +127,7 @@ class SupabaseAuthManager(
 
     fun signOut() = store.clear()
 
-    private fun PersistedAuthSession.toSession() = SupabaseSession(baseUrl.trimEnd('/'), anonKey, accessToken, userId)
+    private fun PersistedAuthSession.toSession() = SupabaseSession(baseUrl.trimEnd('/'), publishableKey, accessToken, userId)
 
     companion object { private const val REFRESH_MARGIN_SECONDS = 60L }
 }

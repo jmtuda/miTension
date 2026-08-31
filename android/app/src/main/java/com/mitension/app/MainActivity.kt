@@ -90,7 +90,7 @@ private fun SignInScreen(configured: Boolean, error: String?, onSignIn: (String,
     ) {
         Text("Autorizar este dispositivo", style = MaterialTheme.typography.headlineSmall)
         Text("Inicia sesión una vez con la cuenta ya aprovisionada.", Modifier.padding(vertical = 12.dp))
-        if (!configured) Text("Falta configurar SUPABASE_URL y SUPABASE_ANON_KEY.", color = MaterialTheme.colorScheme.error)
+        if (!configured) Text("Falta configurar SUPABASE_URL y SUPABASE_PUBLISHABLE_KEY.", color = MaterialTheme.colorScheme.error)
         OutlinedTextField(email, { email = it }, label = { Text("Correo") }, singleLine = true, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(
             password,
