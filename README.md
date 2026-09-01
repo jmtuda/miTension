@@ -4,8 +4,10 @@ Aplicación Android y web para registrar y consultar mediciones personales de te
 
 ## Estado actual
 
-El MVP está completado y operativo. La web desplegada en Vercel y el APK Android
-han superado la validación E2E contra el mismo proyecto real de Supabase.
+miTension v1.0.0 está completada y operativa. La web desplegada en Vercel y
+Android han superado la validación E2E contra el mismo proyecto real de Supabase.
+La mejora visual Android integrada en la PR #13 también fue validada en un
+dispositivo real.
 
 ## Aplicación web
 

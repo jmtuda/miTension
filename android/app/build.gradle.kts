@@ -12,6 +12,16 @@ val supabaseUrl = providers.gradleProperty("SUPABASE_URL")
 val supabasePublishableKey = providers.gradleProperty("SUPABASE_PUBLISHABLE_KEY")
     .orElse(providers.environmentVariable("SUPABASE_PUBLISHABLE_KEY"))
     .getOrElse("")
+val releaseStoreFile = providers.environmentVariable("MITENSION_RELEASE_STORE_FILE").orNull
+val releaseStorePassword = providers.environmentVariable("MITENSION_RELEASE_STORE_PASSWORD").orNull
+val releaseKeyAlias = providers.environmentVariable("MITENSION_RELEASE_KEY_ALIAS").orNull
+val releaseKeyPassword = providers.environmentVariable("MITENSION_RELEASE_KEY_PASSWORD").orNull
+val hasReleaseSigning = listOf(
+    releaseStoreFile,
+    releaseStorePassword,
+    releaseKeyAlias,
+    releaseKeyPassword,
+).all { !it.isNullOrBlank() }
 
 android {
     namespace = "com.mitension.app"
@@ -22,9 +32,26 @@ android {
         minSdk = 26
         targetSdk = 33
         versionCode = 1
-        versionName = "0.1.0"
+        versionName = "1.0.0"
         buildConfigField("String", "SUPABASE_URL", supabaseUrl.asBuildConfigString())
         buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", supabasePublishableKey.asBuildConfigString())
+    }
+
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = file(requireNotNull(releaseStoreFile))
+                storePassword = requireNotNull(releaseStorePassword)
+                keyAlias = requireNotNull(releaseKeyAlias)
+                keyPassword = requireNotNull(releaseKeyPassword)
+            }
+        }
+    }
+
+    buildTypes {
+        getByName("release") {
+            signingConfig = signingConfigs.findByName("release")
+        }
     }
 
     buildFeatures {
@@ -43,6 +70,16 @@ android {
 
     kotlinOptions {
         jvmTarget = "11"
+    }
+}
+
+tasks.matching { it.name == "packageRelease" || it.name == "bundleRelease" }.configureEach {
+    doFirst {
+        check(hasReleaseSigning) {
+            "Release signing requires MITENSION_RELEASE_STORE_FILE, " +
+                "MITENSION_RELEASE_STORE_PASSWORD, MITENSION_RELEASE_KEY_ALIAS and " +
+                "MITENSION_RELEASE_KEY_PASSWORD."
+        }
     }
 }
 
