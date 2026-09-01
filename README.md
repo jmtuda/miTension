@@ -4,8 +4,8 @@ Aplicación Android y web para registrar y consultar mediciones personales de te
 
 ## Estado actual
 
-P0 y P1.1–P1.13 están completadas. P1.14 queda pendiente de ejecutar contra una
-instancia real de Supabase.
+El MVP está completado y operativo. La web desplegada en Vercel y el APK Android
+han superado la validación E2E contra el mismo proyecto real de Supabase.
 
 ## Aplicación web
 

@@ -89,23 +89,23 @@ En Windows usar `gradlew.bat` en lugar de `./gradlew`. El APK de prueba instalab
 - **Esquema incompleto:** ejecutar `migration list` y después `db push --dry-run`; aplicar solo las migraciones pendientes versionadas. No editar tablas manualmente ni resetear el remoto.
 - **Android sin sincronizar:** conservar Room y la sesión local, comprobar conectividad/configuración y dejar que WorkManager reintente. No borrar los datos de la aplicación antes de recuperar las mediciones pendientes.
 
-## 7. Checklist manual P1.14
+## 7. Checklist manual P1.14 — completado
 
-P1.14 solo puede cerrarse después de ejecutar este checklist contra el Supabase real. Registrar fecha, versión/commit, dispositivo Android, navegador, URL desplegada y resultado de cada paso; no adjuntar contraseñas, tokens ni notas médicas reales.
+P1.14 se cerró después de ejecutar este checklist contra el Supabase real compartido por la web desplegada en Vercel y el APK Android instalado. Las evidencias se mantienen sin contraseñas, tokens ni notas médicas reales.
 
-- [ ] **Preparación:** CI verde; migraciones local/remoto coinciden; una sola cuenta Auth; registro y acceso anónimo desactivados; web y APK apuntan al mismo Project ref.
-- [ ] **Login inicial:** autorizar Android y web con la cuenta única; cerrar y volver a abrir ambos; confirmar que la sesión persiste sin login cotidiano.
-- [ ] **Alta Android offline:** activar modo avión, completar las dos lecturas con un caso `.5`, revisar media/fecha/nota, confirmar y comprobar estado pendiente en historial.
-- [ ] **Cancelación:** iniciar otra alta y cancelarla antes de confirmar; comprobar que no aparece en ningún historial.
-- [ ] **Reconexión y sync:** recuperar conexión, esperar/reintentar sincronización y comprobar que el pendiente pasa a sincronizado sin duplicarse.
-- [ ] **Android → web:** recargar web y verificar la misma medición, valores redondeados, nota y fecha/hora local.
-- [ ] **Web → Android:** crear y confirmar una medición distinta en web; sincronizar Android y verificar que aparece una sola vez.
-- [ ] **Soft delete Android offline:** sin conexión, confirmar el borrado de una medición; reconectar, sincronizar y verificar que desaparece en web sin borrado físico ni reaparición.
-- [ ] **Soft delete web:** borrar la otra medición desde web y comprobar tras sync que desaparece de Android.
-- [ ] **Filtros:** crear datos de prueba suficientes y comprobar que el mismo intervalo selecciona el conjunto esperado para historial y exportación.
-- [ ] **CSV Android:** exportar el filtro activo, compartir mediante el share sheet y comprobar BOM UTF-8, `;`, cabecera exacta, fecha con offset y escapado de notas.
-- [ ] **PDF Android:** exportar/compartir el filtro activo; comprobar legibilidad, zona local, campos requeridos y ausencia de eliminados/metadatos.
-- [ ] **CSV web:** descargar y, si el navegador lo permite, compartir; comprobar contenido idéntico al conjunto filtrado y fallback de descarga.
-- [ ] **PDF web:** descargar y, si está disponible, compartir; comprobar legibilidad y fallback de descarga.
-- [ ] **RLS observable:** cerrar sesión y confirmar que no se muestran datos; volver a autorizar y confirmar que reaparecen. Usar solo la Publishable key; no probar clientes con `sb_secret_...` ni `service_role`.
-- [ ] **Cierre:** confirmar que no quedan duplicados, pendientes inesperados ni datos de prueba que deban conservarse; guardar evidencias no sensibles y anotar incidencias.
+- [x] **Preparación:** CI verde; migraciones local/remoto coinciden; una sola cuenta Auth; registro y acceso anónimo desactivados; web y APK apuntan al mismo Project ref.
+- [x] **Login inicial:** autorizar Android y web con la cuenta única; cerrar y volver a abrir ambos; confirmar que la sesión persiste sin login cotidiano.
+- [x] **Alta Android offline:** activar modo avión, completar las dos lecturas con un caso `.5`, revisar media/fecha/nota, confirmar y comprobar estado pendiente en historial.
+- [x] **Cancelación:** iniciar otra alta y cancelarla antes de confirmar; comprobar que no aparece en ningún historial.
+- [x] **Reconexión y sync:** recuperar conexión, esperar/reintentar sincronización y comprobar que el pendiente pasa a sincronizado sin duplicarse.
+- [x] **Android → web:** recargar web y verificar la misma medición, valores redondeados, nota y fecha/hora local.
+- [x] **Web → Android:** crear y confirmar una medición distinta en web; sincronizar Android y verificar que aparece una sola vez.
+- [x] **Soft delete Android offline:** sin conexión, confirmar el borrado de una medición; reconectar, sincronizar y verificar que desaparece en web sin borrado físico ni reaparición.
+- [x] **Soft delete web:** borrar la otra medición desde web y comprobar tras sync que desaparece de Android.
+- [x] **Filtros:** crear datos de prueba suficientes y comprobar que el mismo intervalo selecciona el conjunto esperado para historial y exportación.
+- [x] **CSV Android:** exportar el filtro activo, compartir mediante el share sheet y comprobar BOM UTF-8, `;`, cabecera exacta, fecha con offset y escapado de notas.
+- [x] **PDF Android:** exportar/compartir el filtro activo; comprobar legibilidad, zona local, campos requeridos y ausencia de eliminados/metadatos.
+- [x] **CSV web:** descargar y, si el navegador lo permite, compartir; comprobar contenido idéntico al conjunto filtrado y fallback de descarga.
+- [x] **PDF web:** descargar y, si está disponible, compartir; comprobar legibilidad y fallback de descarga.
+- [x] **RLS observable:** cerrar sesión y confirmar que no se muestran datos; volver a autorizar y confirmar que reaparecen. Usar solo la Publishable key; no probar clientes con `sb_secret_...` ni `service_role`.
+- [x] **Cierre:** confirmar que no quedan duplicados, pendientes inesperados ni datos de prueba que deban conservarse; guardar evidencias no sensibles y anotar incidencias.
