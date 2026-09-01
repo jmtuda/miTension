@@ -81,6 +81,21 @@ cd android
 
 En Windows usar `gradlew.bat` en lugar de `./gradlew`. El APK de prueba instalable queda en `android/app/build/outputs/apk/debug/app-debug.apk`; instalarlo con Android Studio o `adb install -r <ruta-al-apk>`. Es un artefacto transitorio firmado con la clave de depuración y no es una publicación de tienda.
 
+Para generar la release v1.0.0 firmada, definir también estas variables solo en
+el entorno local seguro del proceso de compilación:
+
+```text
+MITENSION_RELEASE_STORE_FILE=<ruta-absoluta-al-keystore>
+MITENSION_RELEASE_STORE_PASSWORD=<contraseña-del-keystore>
+MITENSION_RELEASE_KEY_ALIAS=mitension
+MITENSION_RELEASE_KEY_PASSWORD=<contraseña-de-la-clave>
+```
+
+El keystore y las contraseñas nunca se versionan. Ejecutar
+`./gradlew :app:assembleRelease`; el APK queda en
+`android/app/build/outputs/apk/release/app-release.apk`. Antes de distribuirlo,
+verificar su firma con `apksigner verify --verbose --print-certs <ruta-al-apk>`.
+
 ## 6. Recuperación operativa mínima
 
 - **Sesión expirada:** abrir la aplicación conectada; la renovación es automática. Si la sesión fue revocada, volver a autorizar el dispositivo con la única cuenta.
