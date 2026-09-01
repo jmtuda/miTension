@@ -28,7 +28,7 @@ Guardar cada media como entero, redondeando `.5` hacia arriba (`ROUND_HALF_UP`).
 - Nube: Supabase con PostgreSQL.
 - Eliminación sin edición; la eliminación será lógica (`soft delete`).
 - Compartir/exportar manualmente bajo demanda en CSV o PDF, sin copia cloud automática externa.
-- Importación del Excel histórico al final del MVP, después de inspeccionar y validar su estructura real.
+- Migración puntual del Excel histórico al cierre del MVP, sin importador permanente.
 
 ## Fuera del MVP
 
@@ -64,6 +64,6 @@ Las gráficas quedan previstas para v2.
 - CSV y PDF pueden generarse y compartirse manualmente desde Android y web sin alterar los datos canónicos.
 - El producto puede desplegarse dentro de los niveles gratuitos elegidos.
 
-## Decisiones pendientes
+## Migración histórica cerrada
 
-La estructura real del Excel histórico y las reglas para sus filas inválidas se decidirán al final del MVP, después de inspeccionar el archivo real. No bloquean el desarrollo actual.
+Se inspeccionó `Tensión.xlsx` y se migraron únicamente las 70 mediciones individuales válidas. Fecha y hora se interpretaron en `Europe/Madrid` y se convirtieron a UTC; máxima, mínima y frecuencia se mapearon a los campos canónicos y `notes = null`. El preview y la verificación final dieron 0 duplicados, 0 conflictos y 0 errores. Fue una operación única: no se creó ni se necesita un importador permanente.

@@ -101,7 +101,7 @@ La copia externa es una acción manual bajo demanda. Android y web generan CSV o
 - La CLI de Supabase aplica las migraciones versionadas mediante `link`, `db push --dry-run` y `db push`; nunca se resetea el proyecto real.
 - El APK instalable de verificación es una compilación `debug` transitoria configurada por variables de entorno o propiedades Gradle locales.
 
-El procedimiento operativo y el checklist manual E2E están en [DEPLOYMENT.md](DEPLOYMENT.md).
+El procedimiento operativo y el checklist manual E2E completado están en [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Orden de implementación
 
@@ -110,4 +110,4 @@ El procedimiento operativo y el checklist manual E2E están en [DEPLOYMENT.md](D
 3. Android offline y sincronización.
 4. Web, filtros y CSV.
 5. Exportación CSV/PDF y compartir bajo demanda.
-6. Inspección e importación del Excel histórico.
+6. Migración puntual del Excel histórico, completada sin añadir un importador al producto.

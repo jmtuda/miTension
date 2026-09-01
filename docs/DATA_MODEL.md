@@ -91,10 +91,4 @@ fecha_hora;sistolica;diastolica;pulso;notas
 
 ## Importación histórica
 
-No diseñar el importador hasta recibir el Excel real. Entonces:
-
-1. inventariar hojas, columnas, tipos, formatos y fórmulas;
-2. definir mapeo, zona horaria, duplicados y filas inválidas;
-3. ejecutar una previsualización sin escritura;
-4. presentar recuentos y errores;
-5. importar idempotentemente con copia previa y trazabilidad.
+La migración histórica desde `Tensión.xlsx` se completó como operación puntual y no forma parte del producto. Se tomaron las 70 mediciones individuales válidas, se interpretaron fecha y hora en `Europe/Madrid` y se almacenaron en UTC; máxima, mínima y frecuencia se mapearon a `systolic`, `diastolic` y `pulse`, con `notes = null`. El preview y la verificación final confirmaron 70 inserciones, 0 duplicados, 0 conflictos y 0 errores. No se creó ni se necesita un importador permanente.

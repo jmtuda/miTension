@@ -42,14 +42,14 @@ Estados sugeridos: `Pendiente`, `En curso`, `Bloqueado`, `Hecho`. Prioridades: P
 - [x] **P1.11 Pruebas automáticas:** cálculo, validación, Room, sincronización, RLS, CSV, PDF, compartir y autenticación.
 - [x] **P1.12 CI:** compilación, lint y pruebas Android/web/SQL en cada cambio.
 - [x] **P1.13 Despliegue gratuito:** preparación reproducible de Supabase, web y APK; configuración sin secretos, cuotas y procedimiento de recuperación documentados.
-- [ ] **P1.14 Prueba extremo a extremo:** alta offline, reconexión, web, eliminación y exportación/compartir manual.
+- [x] **P1.14 Prueba extremo a extremo:** E2E real satisfactorio en web y Android contra el mismo Supabase; login persistente, alta offline, reconexión, sincronización bidireccional, eliminación, filtros y exportación/compartir CSV/PDF validados.
 
-## P1 — Importación al final del MVP
+## P1 — Migración histórica de cierre
 
-- [ ] **P1.15 Inspeccionar el Excel real** sin modificarlo.
-- [ ] **P1.16 Aprobar mapeo y reglas** de fechas, duplicados y errores.
-- [ ] **P1.17 Previsualizar y validar** recuentos antes de escribir.
-- [ ] **P1.18 Importar idempotentemente** y emitir informe de resultado.
+- [x] **P1.15 Inspeccionar `Tensión.xlsx`** sin modificarlo y seleccionar las 70 mediciones individuales válidas.
+- [x] **P1.16 Aplicar el mapeo aprobado:** fecha y hora en `Europe/Madrid` convertidas a UTC; máxima, mínima y frecuencia a los campos canónicos; `notes = null`.
+- [x] **P1.17 Previsualizar y validar:** 70 nuevas, 0 duplicados, 0 conflictos y 0 errores antes de escribir.
+- [x] **P1.18 Completar la migración puntual:** 70 mediciones insertadas y verificadas para la cuenta única, sin duplicados ni conflictos. Operación única cerrada; no se creó ni se necesita un importador permanente.
 
 ## P2 — v2
 
@@ -61,3 +61,5 @@ Estados sugeridos: `Pendiente`, `En curso`, `Bloqueado`, `Hecho`. Prioridades: P
 ## Definición de terminado
 
 Una tarea está terminada cuando tiene criterios de aceptación comprobados, pruebas proporcionales al riesgo, secretos fuera del código, documentación actualizada y no introduce rutas que omitan el flujo de dos mediciones y confirmación.
+
+El MVP cumple esta definición y queda operativo y completado.
