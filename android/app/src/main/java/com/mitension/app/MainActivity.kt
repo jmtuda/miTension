@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val app = application as MiTensionApplication
         setContent {
-            MaterialTheme {
+            MiTensionTheme {
                 when (val state = authState) {
                     AuthState.Loading -> LoadingScreen()
                     is AuthState.SignedOut -> SignInScreen(app.authManager.isConfigured, state.error) { email, password ->
