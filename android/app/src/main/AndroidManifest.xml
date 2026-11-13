@@ -4,7 +4,9 @@
     <application
         android:name=".MiTensionApplication"
         android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher_mitension"
         android:label="miTension"
+        android:roundIcon="@mipmap/ic_launcher_mitension"
         android:supportsRtl="true"
         android:theme="@style/Theme.miTension">
         <activity
